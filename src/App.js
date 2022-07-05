@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { useState,useEffect } from 'react';
 import './App.css';
+import {storage} from './firebase';
+import {ref,uploadBytes}  from 'firebase/storage';
+import {v4} from 'uuid'
 
 function App() {
+
+  const [imgUpload,setImgUpload]=useState(null);
+  const uploadImage =()=>{
+    if(imgUpload===null)return;
+    const imageRef=ref(storage,`images/${imgUpload.name +v4() }`);
+    uploadBytes(imageRef,imgUpload).then(()=>{
+      alert('uploaded');
+    }  
+    ).catch(err=>{
+      console.log(err);
+    }
+    )
+  }
+
+  useEffect(()=>{
+    
+  },[])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <input type="file"  placeholder='choose file' onChange={(e)=>setImgUpload(e.target.files[0])}/>
+    <button onClick={uploadImage}>Upload Image</button>
+    
     </div>
   );
 }
